@@ -44,7 +44,6 @@ function fitness() {
 	if (x > ax) inputy = 1
 	if (x == ax) inputy = 0
 
-	document.getElementById("fitness").innerHTML =  iMove + ' |||| ' + iP + ' &&& ' + iGeneration;
 	iMove++
 	var du=0;var dr=0;var dl=0;var dd=0;
 	// skill_snake= synaptic.Network.fromJSON(GA.mutation(skill_snake.toJSON()))
@@ -58,7 +57,8 @@ function fitness() {
 		if((xx+1)%side==x&&yy==x1)dd=1;
 		if(xx==x&&yy==x1)killer();
 	}
-
+	//if(dr)alert('!!!')
+	document.getElementById("fitness").innerHTML =  iMove + ' |||| ' + iP + ' &&& ' + iGeneration;
 	var l = GA.Population[iP].activate([inputx, inputy,du,dd,dr,dl])
 		// console.log(l);
 	if (l[0] > 0.5) {

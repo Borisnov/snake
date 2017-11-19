@@ -35,7 +35,7 @@ GeneticAlgorithm.prototype = {
 		for (var i = 0; i < this.max_units; i++) {
 			// create a new unit by generating a random Synaptic neural network
 			// with 2 neurons in the input layer, 6 neurons in the hidden layer and 1 neuron in the output layer
-			var newUnit = new synaptic.Architect.Perceptron(2, 2, 4);
+			var newUnit = new synaptic.Architect.Perceptron(6, 6,4, 4);
 
 			// set additional parameters for the new unit
 			// newUnit.index = i;
