@@ -13,6 +13,13 @@ body{
 	margin-left: 200px;
 	border-radius: 10px;
 }
+#div_g
+{
+	margin-right: 40px;
+	background-color: #ffffff;
+	float: right;
+	opacity: 0.8;
+}
 #bal{
 	float: right;
 	margin-top: 20px;
