@@ -22,9 +22,9 @@ var iP = 0
 var maxMove = 12
 var iMove = 0
 var iGeneration = 1
-var velosity = 6
+var velosity = 10
 var pastBal = 0
-var show =false;
+var show =true;
 var data = [
 	[0, 0]
 ];
@@ -33,7 +33,6 @@ var g;
 // var learningRate = 0.5
 // alert(1)
 //ìàòðèöà
-
 
 
 function fitness() {
@@ -46,9 +45,20 @@ function fitness() {
 
 	document.getElementById("fitness").innerHTML =  iMove + ' |||| ' + iP + ' &&& ' + iGeneration;
 	iMove++
+	var du=0;var dr=0;var dl=0;var dd=0;
 	// skill_snake= synaptic.Network.fromJSON(GA.mutation(skill_snake.toJSON()))
 	// var l = skill_snake.activate([inputx, inputy])
-	var l = GA.Population[iP].activate([inputx, inputy])
+	for (var i = 0; i < y.length; i++) {
+		var xx=y[i]
+		var yy=y1[i]
+		if(yy==(x1+1)%side&&xx==x)du=1;
+		if((yy+1)%side==x1&&xx==x)dd=1;
+		if(xx==(x+1)%side&&yy==x1)dr=1;
+		if((xx+1)%side==x&&yy==x1)dd=1;
+		if(xx==x&&yy==x1)killer();
+	}
+
+	var l = GA.Population[iP].activate([inputx, inputy,du,dd,dr,dl])
 		// console.log(l);
 	if (l[0] > 0.5) {
 		turn(37)
@@ -61,7 +71,6 @@ function fitness() {
 	}
 	if ((iMove > maxMove && iP < CountP)) {
 		killer()
-
 	}
 }
 
@@ -90,6 +99,11 @@ function plot() {
 }
 
 function killer() {
+	clearMatrix()
+	y = []
+	y1 = []
+	tale();
+	eat();
 	iP++
 	iMove = 0
 	if (iP == CountP) {
@@ -98,8 +112,6 @@ function killer() {
 		iP = 0
 		plot_update()
 	}
-
-
 }
 
 function createMatrix(length, width) {
@@ -146,7 +158,7 @@ function clearMatrix() {
 function tale() {
 	for (var i = 0; i < 2; i++) {
 		y.push(x)
-		y1.push(x1 - i)
+		y1.push(x1)
 	}
 }
 //òåëåïîðò
@@ -189,8 +201,8 @@ function eatok() {
 		GA.Population[iP].fitness++
 			document.getElementById('bal').innerHTML = bal + ' б'
 		eat()
-			//y.push(1)
-			//y1.push(1)
+			y.push(1)
+			y1.push(1)
 	}
 }
 //ñêîðîñòíîé ðåæèì
@@ -217,8 +229,6 @@ function move() {
 	//âûáðàëè êóðñ
 	for (var i = y.length - 1; i > 0; i--) {
 		y[i] = y[i - 1]
-	}
-	for (var i = y1.length - 1; i > 0; i--) {
 		y1[i] = y1[i - 1]
 	}
 	y[0] = x
@@ -275,8 +285,6 @@ function restart() {
 		clearInterval(inter1)
 		y = []
 		y1 = []
-		math
-		math1
 		course = 'right';
 		right = true
 		left = true
