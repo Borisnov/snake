@@ -59,36 +59,46 @@ GeneticAlgorithm.prototype = {
 		// (they will be copied to the next population)
 		var Winners = this.selection();
 
-		if (this.mutateRate == 1 && Winners[0].fitness == 0) {
-			// If the best unit from the initial population has a negative fitness 
-			// then it means there is no any bird which reached the first barrier!
-			// Playing as the God, we can destroy this bad population and try with another one.
-			this.createPopulation();
-		} else {
+		// if (this.mutateRate == 1 && Winners[0].fitness == 0) {
+		// 	// If the best unit from the initial population has a negative fitness 
+		// 	// then it means there is no any bird which reached the first barrier!
+		// 	// Playing as the God, we can destroy this bad population and try with another one.
+		// 	this.createPopulation();
+		// } 
+		// else 
+		// {
 			this.mutateRate = 0.2; // else set the mutatation rate to the real value
-		}
+		// }
 
 		// fill the rest of the next population with new units using crossover and mutation
-		for (var i = this.top_units; i < this.max_units; i++) {
-			var parentA, parentB, offspring;
+		// for (var i = this.top_units; i < this.max_units; i++) {
+		// 	var parentA, parentB, offspring;
 
-			if (i == this.top_units) {
+		// 	if (i == this.top_units) {
+		// 		// offspring is made by a crossover of two best winners
+		// 		parentA = Winners[0].toJSON();
+		// 		parentB = Winners[1].toJSON();
+		// 		offspring = this.crossOver(parentA, parentB);
+
+		// 	} else if (i < this.max_units - 2) {
+		// 		// offspring is made by a crossover of two random winners
+		// 		parentA = this.getRandomUnit(Winners).toJSON();
+		// 		parentB = this.getRandomUnit(Winners).toJSON();
+		// 		offspring = this.crossOver(parentA, parentB);
+
+		// 	} else {
+		// 		// offspring is a random winner
+		// 		offspring = this.getRandomUnit(Winners).toJSON();
+		// 	}
+		//experiment
+		for (var i = this.top_units; i < this.max_units; i++){
+			if(i<20){offspring = Winners[0].toJSON();}
+			else {var parentA, parentB, offspring;
+
 				// offspring is made by a crossover of two best winners
-				parentA = Winners[0].toJSON();
-				parentB = Winners[1].toJSON();
-				offspring = this.crossOver(parentA, parentB);
-
-			} else if (i < this.max_units - 2) {
-				// offspring is made by a crossover of two random winners
 				parentA = this.getRandomUnit(Winners).toJSON();
 				parentB = this.getRandomUnit(Winners).toJSON();
-				offspring = this.crossOver(parentA, parentB);
-
-			} else {
-				// offspring is a random winner
-				offspring = this.getRandomUnit(Winners).toJSON();
-			}
-
+				offspring = this.crossOver(parentA, parentB);}
 			// mutate the offspring
 			offspring = this.mutation(offspring);
 
@@ -102,7 +112,7 @@ GeneticAlgorithm.prototype = {
 			// update population by changing the old unit with the new one
 			this.Population[i] = newUnit;
 		}
-		//for (var i = 0; i < this.max_units; i++){this.Population[i].fitness=0}
+		for (var i = 0; i < this.max_units; i++){this.Population[i].fitness=0}
 	},
 
 	// selects the best units from the current population
