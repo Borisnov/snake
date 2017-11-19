@@ -303,7 +303,7 @@ function restart() {
 window.onload = function() {
 	// alert(1)
 	plot();
-	GA = new GeneticAlgorithm(CountP, 4);
+	GA = new GeneticAlgorithm(CountP, 3);
 	GA.reset();	
 	GA.createPopulation();
 	createMatrix(side, side)
