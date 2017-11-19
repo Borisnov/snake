@@ -95,26 +95,14 @@ GeneticAlgorithm.prototype = {
 			// create a new unit using the neural network from the offspring
 			var newUnit = synaptic.Network.fromJSON(offspring);
 			// newUnit.index = this.Population[i].index;
-			// newUnit.fitness = 0;
+			newUnit.fitness = 0;
 			// newUnit.score = 0;
 			// newUnit.isWinner = false;
 
 			// update population by changing the old unit with the new one
 			this.Population[i] = newUnit;
 		}
-		for (var i = 0; i < this.max_units; i++){this.Population[i].fitness=0}
-
-		// if the top winner has the best fitness in the history, store its achievement!
-		// if (Winners[0].fitness > this.best_fitness){
-		// 	this.best_population = this.iteration;
-		// 	this.best_fitness = Winners[0].fitness;
-		// 	this.best_score = Winners[0].score;
-		// }
-
-		// sort the units of the new population	in ascending order by their index
-		// this.Population.sort(function(unitA, unitB){
-		// 	return unitA.index - unitB.index;
-		// });
+		//for (var i = 0; i < this.max_units; i++){this.Population[i].fitness=0}
 	},
 
 	// selects the best units from the current population
@@ -141,6 +129,11 @@ GeneticAlgorithm.prototype = {
 			var biasFromParentA = parentA.neurons[i]['bias'];
 			parentA.neurons[i]['bias'] = parentB.neurons[i]['bias'];
 			parentB.neurons[i]['bias'] = biasFromParentA;
+		}///////////?
+		for (var i = 0; i < parentB.connections.length; i++) {
+			var t=parentA.connections[i]['weight'];
+			parentA.connections[i]['weight'] = parentB.connections[i]['weight'];
+			parentB.connections[i]['weight'] = t;
 		}
 
 		return this.random(0, 1) == 1 ? parentA : parentB;
