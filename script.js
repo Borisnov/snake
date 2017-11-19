@@ -26,9 +26,10 @@ var velosity = 10
 var pastBal = 0
 var show =true;
 var data = [
-	[0, 0]
+	[0,0,0]
 ];
-var g;
+var g
+var best=0;
 // var fitness = 0
 // var learningRate = 0.5
 // alert(1)
@@ -78,7 +79,7 @@ function plot_update() {
 	var x = iGeneration; // current time
 	var y = bal - pastBal
 	pastBal = bal
-	data.push([x, y]);
+	data.push([x,y,best]);
 	g.updateOptions({
 		'file': data
 	});
@@ -86,13 +87,16 @@ function plot_update() {
 
 function plot() {
 	g = new Dygraph(document.getElementById("div_g"), data, {
-		drawPoints: true,
-		showRoller: true,
-		strokeColor: 'black',
-		axisLineWidth: 1.5,
-		axisLineWidth: 1.5,
-		strokeWidth: 2,
-		labels: ['Generation', 'Apples']
+		// drawPoints: true,
+		// showRoller: true,
+		// strokeColor: 'black',
+		// axisLineWidth: 1.5,
+		// axisLineWidth: 1.5,
+		// strokeWidth: 2,
+		// labels: ['Generation', 'Apples']
+		labels: ['x', 'A', 'B' ],
+          connectSeparatedPoints: true,
+          drawPoints: true
 	});
 	// It sucks that these things aren't objects, and we need to store state in window.
 
@@ -100,6 +104,7 @@ function plot() {
 
 function killer() {
 	clearMatrix()
+	if(GA.Population[iP].fitness>best)best=GA.Population[iP].fitness;
 	y = []
 	y1 = []
 	tale();
@@ -111,6 +116,7 @@ function killer() {
 		iGeneration++
 		iP = 0
 		plot_update()
+		best=0
 	}
 }
 
@@ -321,6 +327,11 @@ window.onload = function() {
 	}
 	document.getElementById('kill').onclick = function() {
 		killer()
+	}
+	document.getElementById('set_speed').onclick = function() {
+		velosity=parseInt(document.getElementById('speed').value)
+		clearInterval(inter1)
+		inter1 = setInterval(move, velosity)
 	}
 	document.getElementById('show').onclick = function() {
 		clearMatrix();
