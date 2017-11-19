@@ -13,17 +13,18 @@ var up = true
 var bal = 0
 var inter
 var speed = 0
-var side = 10
+var side = 6
 var ax = 0
 var ax1 = 0
-var CountP = 35
+var CountP = 30
 var GA;
 var iP = 0
-var maxMove = 40
+var maxMove = 12
 var iMove = 0
 var iGeneration = 1
 var velosity = 6
 var pastBal = 0
+var show =false;
 var data = [
 	[0, 0]
 ];
@@ -118,6 +119,7 @@ function createMatrix(length, width) {
 
 
 function setCell(col, row, val) {
+	if(show){
 	var matrix = document.getElementById('matrix');
 	var cell1 = matrix.children[col];
 	var cell = cell1.children[row];
@@ -130,7 +132,7 @@ function setCell(col, row, val) {
 		cell.style.backgroundColor = 'transparent';
 	else if (val == 1024)
 		cell.style.background = '';
-}
+}}
 
 function clearMatrix() {
 	for (var i = 0; i < side; i++) {
@@ -310,7 +312,10 @@ window.onload = function() {
 		alert(JSON.stringify(GA.Population[iP].toJSON()))
 	}
 	document.getElementById('kill').onclick = function() {
-		// iP++
 		killer()
+	}
+	document.getElementById('show').onclick = function() {
+		clearMatrix();
+		show=!show;
 	}
 }
