@@ -91,15 +91,15 @@ GeneticAlgorithm.prototype = {
 		// 		offspring = this.getRandomUnit(Winners).toJSON();
 		// 	}
 		//experiment
-		for (var i = this.top_units; i < this.max_units; i++){
-			if(i<20){offspring = Winners[0].toJSON();}
-			else {var parentA, parentB, offspring;
+			for (var i = this.top_units; i < this.max_units; i++){
+				if(i<20){offspring = Winners[0].toJSON();}
+				else {var parentA, parentB, offspring;
 
-				// offspring is made by a crossover of two best winners
-				parentA = this.getRandomUnit(Winners).toJSON();
-				parentB = this.getRandomUnit(Winners).toJSON();
-				offspring = this.crossOver(parentA, parentB);}
-			// mutate the offspring
+					// offspring is made by a crossover of two best winners
+					parentA = this.getRandomUnit(Winners).toJSON();
+					parentB = this.getRandomUnit(Winners).toJSON();
+					offspring = this.crossOver(parentA, parentB);}
+		// 	// mutate the offspring
 			offspring = this.mutation(offspring);
 
 			// create a new unit using the neural network from the offspring
@@ -131,6 +131,7 @@ GeneticAlgorithm.prototype = {
 	crossOver: function(parentA, parentB) {
 		// get a cross over cutting point
 		var cutPoint = this.random(0, parentA.neurons.length - 1);
+		var cutPoint1 = this.random(0, parentB.connections.length - 1);
 
 		// swap 'bias' information between both parents:
 		// 1. left side to the crossover point is copied from one parent
@@ -140,7 +141,7 @@ GeneticAlgorithm.prototype = {
 			parentA.neurons[i]['bias'] = parentB.neurons[i]['bias'];
 			parentB.neurons[i]['bias'] = biasFromParentA;
 		}///////////?
-		for (var i = 0; i < parentB.connections.length; i++) {
+		for (var i = 0; i < cutPoint1; i++) {
 			var t=parentA.connections[i]['weight'];
 			parentA.connections[i]['weight'] = parentB.connections[i]['weight'];
 			parentB.connections[i]['weight'] = t;
