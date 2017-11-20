@@ -13,7 +13,7 @@ var up = true
 var bal = 0
 var inter
 var speed = 0
-var side = 6
+var side = 10
 var ax = 0
 var ax1 = 0
 var CountP = 30
@@ -22,7 +22,7 @@ var iP = 0
 var maxMove = 12
 var iMove = 0
 var iGeneration = 1
-var velosity = 10
+var velosity = 5
 var pastBal = 0
 var show =true;
 var data = [
@@ -34,9 +34,12 @@ var best=0;
 // var learningRate = 0.5
 // alert(1)
 //ìàòðèöà
+var n11 = {"neurons":[{"trace":{"elegibility":{},"extended":{}},"state":0,"old":0,"activation":1,"bias":0,"layer":"input","squash":"LOGISTIC"},{"trace":{"elegibility":{},"extended":{}},"state":0,"old":0,"activation":1,"bias":0,"layer":"input","squash":"LOGISTIC"},{"trace":{"elegibility":{},"extended":{}},"state":0.22971834496860663,"old":0.22971834496860663,"activation":0.5571783627934526,"bias":0.07506646866996863,"layer":"0","squash":"LOGISTIC"},{"trace":{"elegibility":{},"extended":{}},"state":-0.15378076822950126,"old":-0.15378076822950126,"activation":0.46163039353829743,"bias":-0.06363906221329285,"layer":"0","squash":"LOGISTIC"},{"trace":{"elegibility":{},"extended":{}},"state":0.0004436879322376533,"old":0.0004436879322376533,"activation":0.5001109219812397,"bias":-0.006833018623545565,"layer":"output","squash":"LOGISTIC"},{"trace":{"elegibility":{},"extended":{}},"state":0.0016259070739373218,"old":0.0016259070739373218,"activation":0.5004064766789384,"bias":-0.025111515039183338,"layer":"output","squash":"LOGISTIC"},{"trace":{"elegibility":{},"extended":{}},"state":0.031088364055870683,"old":0.031088364055870683,"activation":0.5077714651061185,"bias":0.060065519678682316,"layer":"output","squash":"LOGISTIC"},{"trace":{"elegibility":{},"extended":{}},"state":-0.06267563287413827,"old":-0.06267563287413827,"activation":0.4843362190301202,"bias":-0.07276357138502308,"layer":"output","squash":"LOGISTIC"}],"connections":[{"from":"0","to":"2","weight":0.15532052073854574,"gater":null},{"from":"0","to":"3","weight":-0.09031207772074445,"gater":null},{"from":"1","to":"2","weight":-0.0006686444399077451,"gater":null},{"from":"1","to":"3","weight":0.0001703717045360411,"gater":null},{"from":"2","to":"4","weight":0.0550229152905273,"gater":null},{"from":"2","to":"5","weight":0.03902386728910251,"gater":null},{"from":"2","to":"6","weight":0.0007789594563708768,"gater":null},{"from":"2","to":"7","weight":-0.014297342165170243,"gater":null},{"from":"3","to":"4","weight":-0.050648466022148744,"gater":null},{"from":"3","to":"5","weight":0.010818541623376093,"gater":null},{"from":"3","to":"6","weight":-0.06371152200782215,"gater":null},{"from":"3","to":"7","weight":0.03910944440289407,"gater":null}]}
+var skill_snake=synaptic.Network.fromJSON(n11);
 
 
 function fitness() {
+	//alert(1)
 	var inputx = -1
 	var inputy = -1
 	if (x1 > ax1) inputx = 1
@@ -47,19 +50,31 @@ function fitness() {
 	iMove++
 	var du=0;var dr=0;var dl=0;var dd=0;
 	// skill_snake= synaptic.Network.fromJSON(GA.mutation(skill_snake.toJSON()))
-	// var l = skill_snake.activate([inputx, inputy])
+	var l = skill_snake.activate([inputx, inputy])
 	for (var i = 0; i < y.length; i++) {
 		var xx=y[i]
 		var yy=y1[i]
-		if(yy==(x1+1)%side&&xx==x)du=1;
-		if((yy+1)%side==x1&&xx==x)dd=1;
+		if(yy==(x1+1)%side&&xx==x)dd=1;
+		if((yy+1)%side==x1&&xx==x)du=1;
 		if(xx==(x+1)%side&&yy==x1)dr=1;
-		if((xx+1)%side==x&&yy==x1)dd=1;
-		if(xx==x&&yy==x1)killer();
+		if((xx+1)%side==x&&yy==x1)dl=1;
+		if(xx==x&&yy==x1&&iMove>3)killer();
+	}////////
+	var direct=[du,dl,dd,dr];
+	var empty=0;
+	for (var i = 0; i < 4; i++) {
+		if(direct[i])l[i]=0;
+		if(l[i]<=0.5)empty++;
 	}
+	if(empty==4){//alert('4')
+	for (var i = 0; i < 4; i++) {
+		if(direct[i]==0){l[i]=1};
+	}}
+	////////////////
 	//if(dr)alert('!!!')
-	document.getElementById("fitness").innerHTML =  iMove + ' |||| ' + iP + ' &&& ' + iGeneration;
-	var l = GA.Population[iP].activate([inputx, inputy,du,dd,dr,dl])
+	//document.getElementById("fitness").innerHTML =  iMove + ' |||| ' + iP + ' &&& ' + iGeneration;
+	document.getElementById("fitness").innerHTML =  dl+du+dl+dd;
+	//var l = GA.Population[iP].activate([inputx, inputy,du,dd,dr,dl])
 		// console.log(l);
 	if (l[0] > 0.5) {
 		turn(37)
@@ -69,9 +84,10 @@ function fitness() {
 		turn(39)
 	} else if (l[3] > 0.5) {
 		turn(40)
-	}
+	}//turn(39)
+	//37 up 38 left 39 dowm 40 right
 	if ((iMove > maxMove && iP < CountP)) {
-		killer()
+		//killer()
 	}
 }
 
@@ -103,6 +119,9 @@ function plot() {
 }
 
 function killer() {
+	setCell(x,x1,5)
+	setCell(y[0],y1[0],6)
+	alert("game over")
 	clearMatrix()
 	if(GA.Population[iP].fitness>best)best=GA.Population[iP].fitness;
 	y = []
@@ -144,6 +163,10 @@ function setCell(col, row, val) {
 
 	if (val == 1)
 		cell.style.backgroundColor = '#98FB98';
+	else if (val == 5)
+		cell.style.backgroundColor = '#98FB22';
+	else if (val == 6)
+		cell.style.backgroundColor = '#984A22';
 	else if (val == 2)
 		cell.style.background = 'url(img/3.png)';
 	else if (val == 0)
@@ -207,8 +230,8 @@ function eatok() {
 		GA.Population[iP].fitness++
 			document.getElementById('bal').innerHTML = bal + ' б'
 		eat()
-			y.push(1)
-			y1.push(1)
+			y.push(y[y.length-1])
+			y1.push(y1[y1.length-1])
 	}
 }
 //ñêîðîñòíîé ðåæèì
