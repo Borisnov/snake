@@ -26,8 +26,9 @@ var velosity = 150
 var pastBal = 0
 var show =true;
 var data = [
-	[0,0]
+	[0,0,0]
 ];
+var plus=0;
 var g
 var best=0;
 // var fitness = 0
@@ -39,6 +40,7 @@ var skill_snake=synaptic.Network.fromJSON(n11);
 
 
 function fitness() {
+	var l=[0,0,0,0]
 	//alert(1)
 	var inputx = -1
 	var inputy = -1
@@ -46,6 +48,11 @@ function fitness() {
 	if (x1 == ax1) inputx = 0
 	if (x > ax) inputy = 1
 	if (x == ax) inputy = 0
+	// if (x1 > ax1) l[0]=1
+	// else if(x1<ax1)l[2]=1
+	// else if (x1 == ax1){
+	// if (x > ax) l[1]=1
+	// else if (x < ax) l[3] = 1}
 
 	iMove++
 	var du=0;var dr=0;var dl=0;var dd=0;
@@ -95,10 +102,11 @@ function plot_update() {
 	var x = iGeneration; // current time
 	var y = bal - pastBal
 	pastBal = bal
-	data.push([x,bal]);
+	plus++;
+	data.push([plus,bal,iMove/bal]);
 	g.updateOptions({
 		'file': data
-	});
+	});//iMove=0;
 }
 
 function plot() {
@@ -208,7 +216,9 @@ function course1() {
 }
 //ñîçäàíèå åäû
 function eat() {
+	plot_update();
 	var k=1;
+	if(y.length>=side*side-2)killer()
 	while(k==1){
 		math = Math.floor(Math.random() * side)
 		math1 = Math.floor(Math.random() * side)
@@ -228,7 +238,7 @@ function eatok() {
 		setCell(math, math1, 1024);
 		setCell(math, math1, 5);
 		bal++
-		iMove = 0
+		//iMove = 0
 		GA.Population[iP].fitness++
 			document.getElementById('bal').innerHTML = bal + ' б'
 		eat()
