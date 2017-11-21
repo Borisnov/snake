@@ -22,11 +22,11 @@ var iP = 0
 var maxMove = 12
 var iMove = 0
 var iGeneration = 1
-var velosity = 5
+var velosity = 150
 var pastBal = 0
 var show =true;
 var data = [
-	[0,0,0]
+	[0,0]
 ];
 var g
 var best=0;
@@ -95,7 +95,7 @@ function plot_update() {
 	var x = iGeneration; // current time
 	var y = bal - pastBal
 	pastBal = bal
-	data.push([x,y,best]);
+	data.push([x,bal]);
 	g.updateOptions({
 		'file': data
 	});
@@ -110,7 +110,7 @@ function plot() {
 		// axisLineWidth: 1.5,
 		// strokeWidth: 2,
 		// labels: ['Generation', 'Apples']
-		labels: ['x', 'A', 'B' ],
+		//labels: ['x', 'A', 'B' ],
           connectSeparatedPoints: true,
           drawPoints: true
 	});
@@ -119,9 +119,11 @@ function plot() {
 }
 
 function killer() {
-	setCell(x,x1,5)
+	iGeneration++;
+	// setCell(x,x1,5)
 	setCell(y[0],y1[0],6)
-	alert("game over")
+	//alert('geme over')
+	//alert("game over")
 	clearMatrix()
 	if(GA.Population[iP].fitness>best)best=GA.Population[iP].fitness;
 	y = []
@@ -129,6 +131,8 @@ function killer() {
 	tale();
 	eat();
 	iP++
+	plot_update()
+	bal=0;
 	iMove = 0
 	if (iP == CountP) {
 		GA.evolvePopulation()
@@ -185,19 +189,15 @@ function clearMatrix() {
 
 //ñîçäàíèå õâîñòà
 function tale() {
-	for (var i = 0; i < 2; i++) {
-		y.push(x)
-		y1.push(x1)
-	}
+	y.push(x)
+	y.push(x)
+	y1.push(x1)
+	y1.push(x1)
 }
 //òåëåïîðò
 function border() {
-	for (var i = 0; i < side; i++) {
-		if (x < 0) x = side - 1;
-		if (x > side - 1) x = 0;
-		if (x1 < 0) x1 = side - 1;
-		if (x1 > side - 1) x1 = 0;
-	}
+	x=(x+side)%side;
+	x1=(x1+side)%side
 }
 //âûáîð íàïðàâëåíèÿ
 function course1() {
@@ -208,13 +208,15 @@ function course1() {
 }
 //ñîçäàíèå åäû
 function eat() {
-	math = Math.floor(Math.random() * side)
-	math1 = Math.floor(Math.random() * side)
-	if ((math != x) && (math1 != x1)) {
+	var k=1;
+	while(k==1){
+		math = Math.floor(Math.random() * side)
+		math1 = Math.floor(Math.random() * side)
+		k=0;
 		for (var i = 0; i < y.length; i++) {
-			if ((y[i] == math) && (y1[i] == math1)) eat();
-		};
-	} else eat()
+			if (y[i] == math && y1[i] == math1) k=1;
+		}if(x==math && x1==math1)k=1
+	}
 	ax = math
 	ax1 = math1
 	setCell(math, math1, 2);
@@ -224,7 +226,7 @@ function eatok() {
 	if ((x == math) && (x1 == math1)) {
 		//speed++
 		setCell(math, math1, 1024);
-		setCell(math, math1, 1);
+		setCell(math, math1, 5);
 		bal++
 		iMove = 0
 		GA.Population[iP].fitness++
@@ -251,25 +253,28 @@ function move() {
 
 	//ïîãàñèëè
 	fitness()
-	setCell(x, x1, 0);
-	for (var i = 0; i < y.length; i++) {
-		setCell(y[i], y1[i], 0)
-	}
+	//setCell(x, x1, 0);
+	// for (var i = 0; i < y.length; i++) {
+	// 	setCell(y[i], y1[i], 0)
+	// }
 	//âûáðàëè êóðñ
+
+	setCell(y[y.length-1], y1[y1.length-1], 0)
 	for (var i = y.length - 1; i > 0; i--) {
 		y[i] = y[i - 1]
 		y1[i] = y1[i - 1]
 	}
 	y[0] = x
 	y1[0] = x1
-		//ïðîâåðêè
 	course1()
 	border()
+		//ïðîâåðêè
 		//çàæãëè
-	setCell(x, x1, 1);
-	for (var i = 0; i < y.length; i++) {
-		setCell(y[i], y1[i], 1)
-	}
+	setCell(x, x1, 5);
+	setCell(y[0],y1[0], 1)
+	// for (var i = 0; i < y.length; i++) {
+	// setCell(y[i], y1[i], 1)
+	// }
 	eatok()
 		//ïðîâåðêè
 		///////////////////////////////////////////////////////////// over()
