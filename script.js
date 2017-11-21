@@ -26,44 +26,24 @@ var velosity = 150
 var pastBal = 0
 var show =true;
 var data = [
-	[0,0,0]
+	[0,0]
 ];
 var plus=0;
 var g
 var best=0;
 var water=[];
-//var grid=[]
-// var fitness = 0
-// var learningRate = 0.5
-// alert(1)
-//ìàòðèöà
-var n11 = {"neurons":[{"trace":{"elegibility":{},"extended":{}},"state":0,"old":0,"activation":1,"bias":0,"layer":"input","squash":"LOGISTIC"},{"trace":{"elegibility":{},"extended":{}},"state":0,"old":0,"activation":1,"bias":0,"layer":"input","squash":"LOGISTIC"},{"trace":{"elegibility":{},"extended":{}},"state":0.22971834496860663,"old":0.22971834496860663,"activation":0.5571783627934526,"bias":0.07506646866996863,"layer":"0","squash":"LOGISTIC"},{"trace":{"elegibility":{},"extended":{}},"state":-0.15378076822950126,"old":-0.15378076822950126,"activation":0.46163039353829743,"bias":-0.06363906221329285,"layer":"0","squash":"LOGISTIC"},{"trace":{"elegibility":{},"extended":{}},"state":0.0004436879322376533,"old":0.0004436879322376533,"activation":0.5001109219812397,"bias":-0.006833018623545565,"layer":"output","squash":"LOGISTIC"},{"trace":{"elegibility":{},"extended":{}},"state":0.0016259070739373218,"old":0.0016259070739373218,"activation":0.5004064766789384,"bias":-0.025111515039183338,"layer":"output","squash":"LOGISTIC"},{"trace":{"elegibility":{},"extended":{}},"state":0.031088364055870683,"old":0.031088364055870683,"activation":0.5077714651061185,"bias":0.060065519678682316,"layer":"output","squash":"LOGISTIC"},{"trace":{"elegibility":{},"extended":{}},"state":-0.06267563287413827,"old":-0.06267563287413827,"activation":0.4843362190301202,"bias":-0.07276357138502308,"layer":"output","squash":"LOGISTIC"}],"connections":[{"from":"0","to":"2","weight":0.15532052073854574,"gater":null},{"from":"0","to":"3","weight":-0.09031207772074445,"gater":null},{"from":"1","to":"2","weight":-0.0006686444399077451,"gater":null},{"from":"1","to":"3","weight":0.0001703717045360411,"gater":null},{"from":"2","to":"4","weight":0.0550229152905273,"gater":null},{"from":"2","to":"5","weight":0.03902386728910251,"gater":null},{"from":"2","to":"6","weight":0.0007789594563708768,"gater":null},{"from":"2","to":"7","weight":-0.014297342165170243,"gater":null},{"from":"3","to":"4","weight":-0.050648466022148744,"gater":null},{"from":"3","to":"5","weight":0.010818541623376093,"gater":null},{"from":"3","to":"6","weight":-0.06371152200782215,"gater":null},{"from":"3","to":"7","weight":0.03910944440289407,"gater":null}]}
-var skill_snake=synaptic.Network.fromJSON(n11);
-
 
 function fitness() {
 	iMove++
-	// alert(1)
-	//neural algoritm
-	// var inputx = -1
-	// var inputy = -1
-	// if (x1 > ax1) inputx = 1
-	// if (x1 == ax1) inputx = 0
-	// if (x > ax) inputy = 1
-	// if (x == ax) inputy = 0
-	// skill_snake= synaptic.Network.fromJSON(GA.mutation(skill_snake.toJSON()))
-	//var l = skill_snake.activate([inputx, inputy])
-	//main algoritm
+	
 	var l=[0,0,0,0]
 	if (x1 > ax1) l[0]=1
 	else if(x1<ax1)l[2]=1
-	else if (x1 == ax1){
 	if (x > ax) l[1]=1
-	else if (x < ax) l[3] = 1}
+	else if (x < ax) l[3] = 1
 	//proverka na nedostupnost
 	var grid=[]
 	// var temp;
-	// for (var i = 0; i < side; i++) temp[i]=0;alert(temp[0])
 	// temp=[0,0,0,0,0,0]
 	for (var i = 0; i < side; i++){ grid[i]=[0,0,0,0,0,0,0,0,0,0];}//alert(grid)}
 	for (var i = 0; i < y.length; i++){grid[y[i]][y1[i]]=1;}
@@ -74,6 +54,7 @@ function fitness() {
 	if(grid[norm(x-1)][x1])dl=1;
 	if(grid[x][x1]&&iMove>3)killer()
 	grid[x][x1]=1
+	// grid[ax,ax1]=2;
 	var d=[du,dl,dd,dr];
 	water=[]
 	// alert(2)
@@ -101,7 +82,6 @@ function fitness() {
 					var q3=[water[i][0],norm(water[i][1]-1)]
 					var qq=[0,0,0,0]
 					for (var k = 0; k < water.length; k++) {
-						// alert(water[k])
 						if(water[k][0]==q[0]&&water[k][1]==q[1])qq[0]=1;
 						if(water[k][0]==q1[0]&&water[k][1]==q1[1])qq[1]=1;
 						if(water[k][0]==q2[0]&&water[k][1]==q2[1])qq[2]=1;
@@ -142,30 +122,7 @@ function fitness() {
 		for (var i = 0; i < 4; i++) 
 			if(d[i]==0) l[i]=1
 
-	// for (var i = 0; i < y.length; i++) {
-	// 	var xx=y[i]
-	// 	var yy=y1[i]
-	// 	if(yy==(x1+1)%side&&xx==x)dd=1;
-	// 	if((yy+1)%side==x1&&xx==x)du=1;
-	// 	if(xx==(x+1)%side&&yy==x1)dr=1;
-	// 	if((xx+1)%side==x&&yy==x1)dl=1;
-	// 	if(xx==x&&yy==x1&&iMove>3)killer();
-	// }////////
-	// var direct=[du,dl,dd,dr];
-	// var empty=0;
-	// for (var i = 0; i < 4; i++) {
-	// 	if(direct[i])l[i]=0;
-	// 	if(l[i]<=0.5)empty++;
-	// }
-	// if(empty==4){//alert('4')
-	// for (var i = 0; i < 4; i++) {
-	// 	if(direct[i]==0){l[i]=1};
-	// }}
-	////////////////
-	//if(dr)alert('!!!')
-	//document.getElementById("fitness").innerHTML =  iMove + ' |||| ' + iP + ' &&& ' + iGeneration;
-	//document.getElementById("fitness").innerHTML =  dl+' '+du+dr+dd;
-	//var l = GA.population[iP].activate([inputx, inputy,du,dd,dr,dl]) // console.log(l);
+	
 	if (l[0] > 0.5) {
 		turn(37)
 	} else if (l[1] > 0.5) {
@@ -188,7 +145,7 @@ function plot_update() {
 	var y = bal - pastBal
 	pastBal = bal
 	plus++;
-	data.push([plus,bal,iMove/bal]);
+	data.push([plus,bal]);
 	g.updateOptions({
 		'file': data
 	});//iMove=0;
@@ -201,18 +158,11 @@ function pop1(a) {
 }
 function plot() {
 	g = new Dygraph(document.getElementById("div_g"), data, {
-		// drawPoints: true,
-		// showRoller: true,
-		// strokeColor: 'black',
-		// axisLineWidth: 1.5,
-		// axisLineWidth: 1.5,
-		// strokeWidth: 2,
-		// labels: ['Generation', 'Apples']
+	
 		//labels: ['x', 'A', 'B' ],
           connectSeparatedPoints: true,
           drawPoints: true
 	});
-	// It sucks that these things aren't objects, and we need to store state in window.
 
 }
 
@@ -220,7 +170,7 @@ function killer() {
 	iGeneration++;
 	// setCell(x,x1,5)
 	setCell(y[0],y1[0],6)
-	alert('game over')
+	// alert('game over')
 	//alert("game over")
 	clearMatrix()
 	if(GA.Population[iP].fitness>best)best=GA.Population[iP].fitness; y = []
@@ -305,7 +255,7 @@ function course1() {
 }
 //ñîçäàíèå åäû
 function eat() {
-	plot_update();
+	// plot_update();
 	var k=1;
 	// if(y.length>=side*side-2)killer()
 	while(k==1){
