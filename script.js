@@ -107,7 +107,7 @@ function fitness() {
 					// if(water[i][0]%9==0||water[i][1]%9==0){t=0;}
 					if(grid[water[i][0]][water[i][1]]==2){t=0;l1[a]=c;}
 				}
-				if(c>40){t=0;l1[a]=side+10;}
+				if(c>100){t=0;l1[a]=side*side;}
 			}
 			// alert(c)
 			// d[a]=t
@@ -124,7 +124,7 @@ function fitness() {
 	// if(r==4)
 	// 	for (var i = 0; i < 4; i++) 
 	// 		if(d[i]==0) l[i]=1
-	var m=side*side
+	var m=side*side+1
 	var k=0
 	for (var i = 0; i < 4; i++) {
 		if(l1[i]<m&&d[i]==0){m=l1[i];k=i}
@@ -177,7 +177,7 @@ function killer() {
 	iGeneration++;
 	// setCell(x,x1,5)
 	setCell(y[0],y1[0],6)
-	// alert('game over')
+	alert('game over')
 	//alert("game over")
 	clearMatrix()
 	if(GA.Population[iP].fitness>best)best=GA.Population[iP].fitness; y = []
