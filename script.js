@@ -37,10 +37,11 @@ function fitness() {
 	iMove++
 	
 	var l=[0,0,0,0]
-	if (x1 > ax1) l[0]=1
-	else if(x1<ax1)l[2]=1
-	if (x > ax) l[1]=1
-	else if (x < ax) l[3] = 1
+	var l1=[0,0,0,0]
+	// if (x1 > ax1) l[0]=1
+	// else if(x1<ax1)l[2]=1
+	// if (x > ax) l[1]=1
+	// else if (x < ax) l[3] = 1
 	//proverka na nedostupnost
 	var grid=[]
 	// var temp;
@@ -54,7 +55,7 @@ function fitness() {
 	if(grid[norm(x-1)][x1])dl=1;
 	if(grid[x][x1]&&iMove>3)killer()
 	grid[x][x1]=1
-	// grid[ax,ax1]=2;
+	grid[ax][ax1]=2;
 	var d=[du,dl,dd,dr];
 	water=[]
 	// alert(2)
@@ -67,12 +68,13 @@ function fitness() {
 	var d1=[du,dl,dd,dr];
 	// alert(d1)
 	// alert(d)
+	// alert(grid[ax][ax1])
 	for (var a = 0; a < 4; a++) {
 		if(d[a]==0){
 			water=[d1[a]]
 			var t=1
 			var c=0
-			while(t&&c<20){
+			while(t){
 				c++;
 				var i=water.length-1
 				while (i>=0	) {
@@ -93,36 +95,41 @@ function fitness() {
 					if(!qq[1])water.push(q1)
 					if(!qq[2])water.push(q2)
 					if(!qq[3])water.push(q3)
-					pop1(i)
+					// pop1(i)
 					i--;
 				}
-				// alert(water)
+				// if(c>150)alert(water)
 				var i=0
 				while(i<water.length){
-					if(grid[water[i][0]][water[i][1]]==1){;pop1(i)}else{i++;} }
-
+					if(grid[water[i][0]][water[i][1]]==1){pop1(i)}else{i++;}}
+				// alert(water.length)
 				for (var i = 0; i < water.length; i++) {
-					if(water[i][0]%9==0||water[i][1]%9==0){t=0;}
+					// if(water[i][0]%9==0||water[i][1]%9==0){t=0;}
+					if(grid[water[i][0]][water[i][1]]==2){t=0;l1[a]=c;}
 				}
-				if(water.length>150){alert(a)}
+				if(c>40){t=0;l1[a]=side+10;}
 			}
 			// alert(c)
-			d[a]=t
+			// d[a]=t
 		}
 	}
-	// alert(d)
+	// alert(l1)
 
 	document.getElementById("fitness").innerHTML =  d[0]+' '+d[1]+' '+d[2]+' '+d[3];
 	var r=0;
-	for (var i = 0; i < 4; i++){
-		if(l[i]&&d[i])l[i]=0
-		if(l[i]==0)r++
+	// for (var i = 0; i < 4; i++){
+	// 	if(l[i]&&d[i])l[i]=0
+	// 	if(l[i]==0)r++
+	// }
+	// if(r==4)
+	// 	for (var i = 0; i < 4; i++) 
+	// 		if(d[i]==0) l[i]=1
+	var m=side*side
+	var k=0
+	for (var i = 0; i < 4; i++) {
+		if(l1[i]<m&&d[i]==0){m=l1[i];k=i}
 	}
-	if(r==4)
-		for (var i = 0; i < 4; i++) 
-			if(d[i]==0) l[i]=1
-
-	
+	l[k]=1
 	if (l[0] > 0.5) {
 		turn(37)
 	} else if (l[1] > 0.5) {
