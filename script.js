@@ -1,6 +1,6 @@
 var start1 = false;
-var x = 5
-var x1 = 5
+var x = 4
+var x1 = 4
 var y = []
 var y1 = []
 var math
@@ -31,7 +31,7 @@ var data = [
 var plus=0;
 var g
 var best=0;
-//var grid=[][]
+//var grid=[]
 // var fitness = 0
 // var learningRate = 0.5
 // alert(1)
@@ -42,6 +42,7 @@ var skill_snake=synaptic.Network.fromJSON(n11);
 
 function fitness() {
 	iMove++
+	// alert(1)
 	//neural algoritm
 	// var inputx = -1
 	// var inputy = -1
@@ -59,34 +60,57 @@ function fitness() {
 	if (x > ax) l[1]=1
 	else if (x < ax) l[3] = 1}
 	//proverka na nedostupnost
+	var grid=[]
+	var temp;
+	// for (var i = 0; i < side; i++) temp[i]=0;alert(temp[0])
+	temp=[0,0,0,0,0,0]
+	for (var i = 0; i < side; i++){ grid[i]=[0,0,0,0,0,0,0,0,0,0];}//alert(grid)}
+	for (var i = 0; i < y.length; i++){grid[y[i]][y1[i]]=1;}
+	// alert(grid)
+	// grid[1][1]=8
+	// alert(grid)
 	var du=0;var dr=0;var dl=0;var dd=0;
-	
-	//for (var i = 0; i < side; i++) for (var a = 0; a < side; a++) grid[i][a]=0
+	if(grid[x][norm(x1+1)])dd=1;
+	if(grid[x][norm(x1-1)])du=1;
+	if(grid[norm(x+1)][x1])dr=1;
+	if(grid[norm(x-1)][x1])dl=1;
+	if(grid[x][x1]&&iMove>3)killer()
+	document.getElementById("fitness").innerHTML =  dl+' '+du+' '+dr+' '+dd;
 
+	var d=[du,dl,dd,dr];
 
-	for (var i = 0; i < y.length; i++) {
-		var xx=y[i]
-		var yy=y1[i]
-		if(yy==(x1+1)%side&&xx==x)dd=1;
-		if((yy+1)%side==x1&&xx==x)du=1;
-		if(xx==(x+1)%side&&yy==x1)dr=1;
-		if((xx+1)%side==x&&yy==x1)dl=1;
-		if(xx==x&&yy==x1&&iMove>3)killer();
-	}////////
-	var direct=[du,dl,dd,dr];
-	var empty=0;
-	for (var i = 0; i < 4; i++) {
-		if(direct[i])l[i]=0;
-		if(l[i]<=0.5)empty++;
+	var r=0;
+	for (var i = 0; i < 4; i++){
+		if(l[i]&&d[i])l[i]=0
+		if(l[i]==0)r++
 	}
-	if(empty==4){//alert('4')
-	for (var i = 0; i < 4; i++) {
-		if(direct[i]==0){l[i]=1};
-	}}
+	if(r==4)
+		for (var i = 0; i < 4; i++) 
+			if(d[i]==0) l[i]=1
+
+	// for (var i = 0; i < y.length; i++) {
+	// 	var xx=y[i]
+	// 	var yy=y1[i]
+	// 	if(yy==(x1+1)%side&&xx==x)dd=1;
+	// 	if((yy+1)%side==x1&&xx==x)du=1;
+	// 	if(xx==(x+1)%side&&yy==x1)dr=1;
+	// 	if((xx+1)%side==x&&yy==x1)dl=1;
+	// 	if(xx==x&&yy==x1&&iMove>3)killer();
+	// }////////
+	// var direct=[du,dl,dd,dr];
+	// var empty=0;
+	// for (var i = 0; i < 4; i++) {
+	// 	if(direct[i])l[i]=0;
+	// 	if(l[i]<=0.5)empty++;
+	// }
+	// if(empty==4){//alert('4')
+	// for (var i = 0; i < 4; i++) {
+	// 	if(direct[i]==0){l[i]=1};
+	// }}
 	////////////////
 	//if(dr)alert('!!!')
 	//document.getElementById("fitness").innerHTML =  iMove + ' |||| ' + iP + ' &&& ' + iGeneration;
-	document.getElementById("fitness").innerHTML =  dl+du+dl+dd;
+	//document.getElementById("fitness").innerHTML =  dl+' '+du+dr+dd;
 	//var l = GA.Population[iP].activate([inputx, inputy,du,dd,dr,dl])
 		// console.log(l);
 	if (l[0] > 0.5) {
@@ -103,7 +127,9 @@ function fitness() {
 		//killer()
 	}
 }
-
+function norm(x){
+	return (x+side)%side
+}
 function plot_update() {
 	var x = iGeneration; // current time
 	var y = bal - pastBal
@@ -136,7 +162,7 @@ function killer() {
 	iGeneration++;
 	// setCell(x,x1,5)
 	setCell(y[0],y1[0],6)
-	//alert('geme over')
+	// alert('geme over')
 	//alert("game over")
 	clearMatrix()
 	if(GA.Population[iP].fitness>best)best=GA.Population[iP].fitness;
