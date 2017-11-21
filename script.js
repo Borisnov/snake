@@ -31,6 +31,7 @@ var data = [
 var plus=0;
 var g
 var best=0;
+var water=[];
 //var grid=[]
 // var fitness = 0
 // var learningRate = 0.5
@@ -61,24 +62,72 @@ function fitness() {
 	else if (x < ax) l[3] = 1}
 	//proverka na nedostupnost
 	var grid=[]
-	var temp;
+	// var temp;
 	// for (var i = 0; i < side; i++) temp[i]=0;alert(temp[0])
-	temp=[0,0,0,0,0,0]
+	// temp=[0,0,0,0,0,0]
 	for (var i = 0; i < side; i++){ grid[i]=[0,0,0,0,0,0,0,0,0,0];}//alert(grid)}
 	for (var i = 0; i < y.length; i++){grid[y[i]][y1[i]]=1;}
-	// alert(grid)
-	// grid[1][1]=8
-	// alert(grid)
 	var du=0;var dr=0;var dl=0;var dd=0;
 	if(grid[x][norm(x1+1)])dd=1;
 	if(grid[x][norm(x1-1)])du=1;
 	if(grid[norm(x+1)][x1])dr=1;
 	if(grid[norm(x-1)][x1])dl=1;
 	if(grid[x][x1]&&iMove>3)killer()
-	document.getElementById("fitness").innerHTML =  dl+' '+du+' '+dr+' '+dd;
-
+	grid[x][x1]=1
 	var d=[du,dl,dd,dr];
+	water=[]
+	// alert(2)
+	dd=[x,norm(x1+1)]
+	du=[x,norm(x1-1)]
+	dr=[norm(x+1),x1]
+	dl=[norm(x-1),x1]
+	// water=[du,dd]
+	// water.pop1(1) 
+	var d1=[du,dl,dd,dr];
+	// alert(d1)
+	// alert(d)
+	for (var a = 0; a < 4; a++) {
+		if(d[a]==0){
+			water=[d1[a]]
+			var t=1
+			var c=0
+			while(t&&c<20){
+				c++;
+				var i=water.length-1
+				while (i>=0	) {
+					water.push([norm(water[i][0]+1),water[i][1]])
+					water.push([norm(water[i][0]-1),water[i][1]])
+					water.push([water[i][0],norm(water[i][1]+1)])
+					water.push([water[i][0],norm(water[i][1]-1)])
+					pop1(i)
+					i--;
+				}
+				// if(waterlength>500)alert(water.length)
+				var i=0
+				// var n=0;
+				// alert(grid)
+				// alert(water)
+				// alert(grid[3][4])
+				while(i<water.length){
+					if(grid[water[i][0]][water[i][1]]==1){;pop1(i)}else{i++;} }
+				// alert(water)
+				// for (var i = 0; i < water.length; i++) {
+				// 	if(grid[water[i][0]][water[i][1]]==1)alert(water[i])
+				// }
+				// alert(water)
+				// alert(n)
+				for (var i = 0; i < water.length; i++) {
+					// if(water[i][0]%9==0||water[i][1]%9==0)alert(c)
+					if(water[i][0]%9==0||water[i][1]%9==0){t=0;}
+				}
+			}
+			// alert(c)
+			d[a]=t
+		}
+	}
+	// alert(d)
 
+	document.getElementById("fitness").innerHTML =  d[0]+' '+d[1]+' '+d[2]+' '+d[3];
 	var r=0;
 	for (var i = 0; i < 4; i++){
 		if(l[i]&&d[i])l[i]=0
@@ -111,8 +160,7 @@ function fitness() {
 	//if(dr)alert('!!!')
 	//document.getElementById("fitness").innerHTML =  iMove + ' |||| ' + iP + ' &&& ' + iGeneration;
 	//document.getElementById("fitness").innerHTML =  dl+' '+du+dr+dd;
-	//var l = GA.Population[iP].activate([inputx, inputy,du,dd,dr,dl])
-		// console.log(l);
+	//var l = GA.population[iP].activate([inputx, inputy,du,dd,dr,dl]) // console.log(l);
 	if (l[0] > 0.5) {
 		turn(37)
 	} else if (l[1] > 0.5) {
@@ -140,7 +188,12 @@ function plot_update() {
 		'file': data
 	});//iMove=0;
 }
-
+function pop1(a) {
+	for (var i = a; i < water.length-1; i++) {
+		water[i]=water[i+1]
+	}
+	water.pop()
+}
 function plot() {
 	g = new Dygraph(document.getElementById("div_g"), data, {
 		// drawPoints: true,
@@ -162,11 +215,10 @@ function killer() {
 	iGeneration++;
 	// setCell(x,x1,5)
 	setCell(y[0],y1[0],6)
-	// alert('geme over')
+	alert('game over')
 	//alert("game over")
 	clearMatrix()
-	if(GA.Population[iP].fitness>best)best=GA.Population[iP].fitness;
-	y = []
+	if(GA.Population[iP].fitness>best)best=GA.Population[iP].fitness; y = []
 	y1 = []
 	tale();
 	eat();
@@ -175,7 +227,7 @@ function killer() {
 	bal=0;
 	iMove = 0
 	if (iP == CountP) {
-		GA.evolvePopulation()
+		GA.evolvePopulation() 
 		iGeneration++
 		iP = 0
 		plot_update()
@@ -250,7 +302,7 @@ function course1() {
 function eat() {
 	plot_update();
 	var k=1;
-	if(y.length>=side*side-2)killer()
+	// if(y.length>=side*side-2)killer()
 	while(k==1){
 		math = Math.floor(Math.random() * side)
 		math1 = Math.floor(Math.random() * side)
@@ -271,8 +323,8 @@ function eatok() {
 		setCell(math, math1, 5);
 		bal++
 		//iMove = 0
-		GA.Population[iP].fitness++
-			document.getElementById('bal').innerHTML = bal + ' б'
+		GA.Population[iP].fitness++ 
+		document.getElementById('bal').innerHTML = bal + ' б'
 		eat()
 			y.push(y[y.length-1])
 			y1.push(y1[y1.length-1])
@@ -389,11 +441,11 @@ window.onload = function() {
 	plot();
 	GA = new GeneticAlgorithm(CountP, 3);
 	GA.reset();	
-	GA.createPopulation();
+	GA.createPopulation(); 
 	createMatrix(side, side)
 	restart()
 	document.getElementById('button').onclick = function() {
-		alert(JSON.stringify(GA.Population[iP].toJSON()))
+		// alert(JSON.stringify(GA.population[iP].toJSON())) // alert()
 	}
 	document.getElementById('kill').onclick = function() {
 		killer()
