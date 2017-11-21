@@ -31,6 +31,7 @@ var data = [
 var plus=0;
 var g
 var best=0;
+//var grid=[][]
 // var fitness = 0
 // var learningRate = 0.5
 // alert(1)
@@ -40,24 +41,29 @@ var skill_snake=synaptic.Network.fromJSON(n11);
 
 
 function fitness() {
-	var l=[0,0,0,0]
-	//alert(1)
-	var inputx = -1
-	var inputy = -1
-	if (x1 > ax1) inputx = 1
-	if (x1 == ax1) inputx = 0
-	if (x > ax) inputy = 1
-	if (x == ax) inputy = 0
-	// if (x1 > ax1) l[0]=1
-	// else if(x1<ax1)l[2]=1
-	// else if (x1 == ax1){
-	// if (x > ax) l[1]=1
-	// else if (x < ax) l[3] = 1}
-
 	iMove++
-	var du=0;var dr=0;var dl=0;var dd=0;
+	//neural algoritm
+	// var inputx = -1
+	// var inputy = -1
+	// if (x1 > ax1) inputx = 1
+	// if (x1 == ax1) inputx = 0
+	// if (x > ax) inputy = 1
+	// if (x == ax) inputy = 0
 	// skill_snake= synaptic.Network.fromJSON(GA.mutation(skill_snake.toJSON()))
-	var l = skill_snake.activate([inputx, inputy])
+	//var l = skill_snake.activate([inputx, inputy])
+	//main algoritm
+	var l=[0,0,0,0]
+	if (x1 > ax1) l[0]=1
+	else if(x1<ax1)l[2]=1
+	else if (x1 == ax1){
+	if (x > ax) l[1]=1
+	else if (x < ax) l[3] = 1}
+	//proverka na nedostupnost
+	var du=0;var dr=0;var dl=0;var dd=0;
+	
+	//for (var i = 0; i < side; i++) for (var a = 0; a < side; a++) grid[i][a]=0
+
+
 	for (var i = 0; i < y.length; i++) {
 		var xx=y[i]
 		var yy=y1[i]
