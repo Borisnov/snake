@@ -95,31 +95,36 @@ function fitness() {
 				c++;
 				var i=water.length-1
 				while (i>=0	) {
-					water.push([norm(water[i][0]+1),water[i][1]])
-					water.push([norm(water[i][0]-1),water[i][1]])
-					water.push([water[i][0],norm(water[i][1]+1)])
-					water.push([water[i][0],norm(water[i][1]-1)])
+					var q=[norm(water[i][0]+1),water[i][1]]
+					var q1=[norm(water[i][0]-1),water[i][1]]
+					var q2=[water[i][0],norm(water[i][1]+1)]
+					var q3=[water[i][0],norm(water[i][1]-1)]
+					var qq=[0,0,0,0]
+					for (var k = 0; k < water.length; k++) {
+						// alert(water[k])
+						if(water[k][0]==q[0]&&water[k][1]==q[1])qq[0]=1;
+						if(water[k][0]==q1[0]&&water[k][1]==q1[1])qq[1]=1;
+						if(water[k][0]==q2[0]&&water[k][1]==q2[1])qq[2]=1;
+						if(water[k][0]==q3[0]&&water[k][1]==q3[1])qq[3]=1;
+					}
+
+					// alert(qq)
+					if(!qq[0])water.push(q)
+					if(!qq[1])water.push(q1)
+					if(!qq[2])water.push(q2)
+					if(!qq[3])water.push(q3)
 					pop1(i)
 					i--;
 				}
-				// if(waterlength>500)alert(water.length)
-				var i=0
-				// var n=0;
-				// alert(grid)
 				// alert(water)
-				// alert(grid[3][4])
+				var i=0
 				while(i<water.length){
 					if(grid[water[i][0]][water[i][1]]==1){;pop1(i)}else{i++;} }
-				// alert(water)
-				// for (var i = 0; i < water.length; i++) {
-				// 	if(grid[water[i][0]][water[i][1]]==1)alert(water[i])
-				// }
-				// alert(water)
-				// alert(n)
+
 				for (var i = 0; i < water.length; i++) {
-					// if(water[i][0]%9==0||water[i][1]%9==0)alert(c)
 					if(water[i][0]%9==0||water[i][1]%9==0){t=0;}
 				}
+				if(water.length>150){alert(a)}
 			}
 			// alert(c)
 			d[a]=t
