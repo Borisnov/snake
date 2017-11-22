@@ -73,8 +73,9 @@ function fitness() {
 		if(d[a]==0){
 			water=[d1[a]]
 			var t=1
+			var t1=1
 			var c=0
-			while(t){
+			while((t||t1)&&c<side*2+10){
 				c++;
 				var i=water.length-1
 				while (i>=0	) {
@@ -98,25 +99,37 @@ function fitness() {
 					// pop1(i)
 					i--;
 				}
-				// if(c>150)alert(water)
+				// if(c>20)alert(c)
 				var i=0
 				while(i<water.length){
 					if(grid[water[i][0]][water[i][1]]==1){pop1(i)}else{i++;}}
 				// alert(water.length)
 				for (var i = 0; i < water.length; i++) {
-					// if(water[i][0]%9==0||water[i][1]%9==0){t=0;}
-					if(grid[water[i][0]][water[i][1]]==2){t=0;l1[a]=c;}
+					if(water[i][0]%(side-1)==0||water[i][1]%(side-1)==0){t1=0;}
+					if(grid[water[i][0]][water[i][1]]==2&&t){t=0;l1[a]=c;}
 				}
-				if(c>100){t=0;l1[a]=side*side;}
+				if(c>side*2){t=0;l1[a]=side*3;}
 			}
 			// alert(c)
-			// d[a]=t
+			d[a]=t1
 		}
 	}
 	// alert(l1)
 
 	document.getElementById("fitness").innerHTML =  d[0]+' '+d[1]+' '+d[2]+' '+d[3];
 	var r=0;
+	var m=side*side+1
+	var k=0
+	// var k1=-1;
+	for (var i = 0; i < 4; i++) {
+		if(l1[i]<m&&d[i]==0){m=l1[i];k1=k;k=i}
+	}
+	l[k]=1
+	var s=l[0]+l[1]+l[2]+l[3]
+	// if(s!=1)alert(s)
+	// l[k1]=1
+
+	// alert(d)
 	// for (var i = 0; i < 4; i++){
 	// 	if(l[i]&&d[i])l[i]=0
 	// 	if(l[i]==0)r++
@@ -124,12 +137,7 @@ function fitness() {
 	// if(r==4)
 	// 	for (var i = 0; i < 4; i++) 
 	// 		if(d[i]==0) l[i]=1
-	var m=side*side+1
-	var k=0
-	for (var i = 0; i < 4; i++) {
-		if(l1[i]<m&&d[i]==0){m=l1[i];k=i}
-	}
-	l[k]=1
+	
 	if (l[0] > 0.5) {
 		turn(37)
 	} else if (l[1] > 0.5) {
@@ -175,21 +183,24 @@ function plot() {
 
 function killer() {
 	iGeneration++;
-	// setCell(x,x1,5)
-	setCell(y[0],y1[0],6)
-	alert('game over')
-	//alert("game over")
+	setCell(x,x1,5)
+	// setCell(y[0],y1[0],6)
+	// alert('game over')
+	alert("game over")
 	clearMatrix()
-	if(GA.Population[iP].fitness>best)best=GA.Population[iP].fitness; y = []
+	// if(GA.Population[iP].fitness>best)best=GA.Population[iP].fitness; y = []
 	y1 = []
+	y = []
+	// alert(1)
 	tale();
 	eat();
+	// alert(2)
 	iP++
 	plot_update()
 	bal=0;
 	iMove = 0
 	if (iP == CountP) {
-		GA.evolvePopulation() 
+		// GA.evolvePopulation() 
 		iGeneration++
 		iP = 0
 		plot_update()
@@ -215,6 +226,7 @@ function createMatrix(length, width) {
 
 function setCell(col, row, val) {
 	if(show){
+	if(col>=side||col<0)alert(col)
 	var matrix = document.getElementById('matrix');
 	var cell1 = matrix.children[col];
 	var cell = cell1.children[row];
@@ -222,13 +234,13 @@ function setCell(col, row, val) {
 	if (val == 1)
 		cell.style.backgroundColor = '#98FB98';
 	else if (val == 5)
-		cell.style.backgroundColor = '#98FB22';
+		cell.style.backgroundColor = '#1FFF00';
 	else if (val == 6)
-		cell.style.backgroundColor = '#984A22';
+		cell.style.backgroundColor = '#984F22';
 	else if (val == 2)
 		cell.style.background = 'url(img/3.png)';
-	else if (val == 0)
-		cell.style.backgroundColor = 'transparent';
+	// else if (val == 0)
+	// 	cell.style.backgroundColor = 'transparent';
 	else if (val == 1024)
 		cell.style.background = '';
 }}
@@ -285,9 +297,10 @@ function eatok() {
 		setCell(math, math1, 5);
 		bal++
 		//iMove = 0
-		GA.Population[iP].fitness++ 
+		// GA.Population[iP].fitness++ 
 		document.getElementById('bal').innerHTML = bal + ' б'
 		eat()
+		// if(y.length==0)alert(0)
 			y.push(y[y.length-1])
 			y1.push(y1[y1.length-1])
 	}
@@ -309,13 +322,10 @@ function move() {
 
 	//ïîãàñèëè
 	fitness()
-	//setCell(x, x1, 0);
-	// for (var i = 0; i < y.length; i++) {
-	// 	setCell(y[i], y1[i], 0)
-	// }
-	//âûáðàëè êóðñ
 
-	setCell(y[y.length-1], y1[y1.length-1], 0)
+	if(y.length!=y1.length)alert('smal')
+	setCell(y[y.length-1], y1[y.length-1], 1024)
+	// setCell(x, x1, 1024)
 	for (var i = y.length - 1; i > 0; i--) {
 		y[i] = y[i - 1]
 		y1[i] = y1[i - 1]
@@ -401,9 +411,9 @@ function restart() {
 window.onload = function() {
 	// alert(1)
 	plot();
-	GA = new GeneticAlgorithm(CountP, 3);
-	GA.reset();	
-	GA.createPopulation(); 
+	// GA = new GeneticAlgorithm(CountP, 3);
+	// GA.reset();	
+	// GA.createPopulation(); 
 	createMatrix(side, side)
 	restart()
 	document.getElementById('button').onclick = function() {
