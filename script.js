@@ -22,7 +22,7 @@ var iP = 0
 var maxMove = 12
 var iMove = 0
 var iGeneration = 1
-var velosity = 150
+var velosity = 170
 var common_bal = 0
 var show =true;
 var data = [
@@ -32,13 +32,13 @@ var plus=0;
 var g
 var best=0;
 var moves=0;
-var after=5;
-var umnosit=4;
+var after=9;
+var umnosit=20;
 var water=[];
 
 function fitness() {
 	iMove++
-	
+	if(iMove>1000)killer()
 	var l=[0,0,0,0]
 	var l1=[0,0,0,0]
 	// if (x1 > ax1) l[0]=1
@@ -81,7 +81,6 @@ function fitness() {
 			var tupic=0;
 			while(t!=0){
 				c++;
-				step=0
 				prev=len;
 				i=water.length-1
 				len=i+1;
@@ -104,14 +103,16 @@ function fitness() {
 					i--;
 				}
 				i=prev;
-				while(i<water.length){if(grid[water[i][0]][water[i][1]]>c+1) pop1(i); else i++;}
+				while(i<water.length){if(grid[water[i][0]][water[i][1]]>=c+1) pop1(i); else i++;}
 
-				if(prev==water.length){t=0;l1[a]=side*umnosit;}
+				if(prev==water.length&&prev<side*side-y.length){t=0;l1[a]=side*umnosit;}
 
-				for (var i = 0; i < water.length; i++)
+				for (var i = prev; i < water.length; i++)
 					if(t==1&&grid[water[i][0]][water[i][1]]==-1){
 						t=2;copy=c;
 						tupic=0;
+						// water=[[ax,ax1]]
+						// len=0
 					}
 				if(t==2)tupic++
 
@@ -133,7 +134,7 @@ function fitness() {
 	if (l[0] == 1) turn(37)
 	else if (l[1] ==1) turn(38)
 	else if (l[2] ==1) turn(39)
-	else if (l[3] ==1)turn(40)
+	else if (l[3] ==1) turn(40)
 	//37 up 38 left 39 dowm 40 right
 	// if ((iMove > maxMove && iP < CountP)) {
 	// 	//killer()
@@ -169,10 +170,10 @@ function plot() {
 }
 
 function killer() {
-	// if(iMove<5)alert(5)
+	// if(bal<20)alert(bal)
 	iGeneration++;
-	setCell(x,x1,5)
 	setCell(y[0],y1[0],6)
+	setCell(x,x1,5)
 	// alert('game over')
 	// alert("game over")
 	clearMatrix()
@@ -217,17 +218,17 @@ function createMatrix(length, width) {
 
 function setCell(col, row, val) {
 	if(show){
-	if(col>=side||col<0)alert(col)
+	// if(col>=side||col<0)alert(col)
 	var matrix = document.getElementById('matrix');
 	var cell1 = matrix.children[col];
 	var cell = cell1.children[row];
 
 	if (val == 1)
-		cell.style.backgroundColor = '#98FB98';
+		cell.style.backgroundColor = '#FFFF00';
 	else if (val == 5)
-		cell.style.backgroundColor = '#1FFF00';
+		cell.style.backgroundColor = '#123456';
 	else if (val == 6)
-		cell.style.backgroundColor = '#984F22';
+		cell.style.backgroundColor = '#FF4444';
 	else if (val == 2)
 		cell.style.background = 'url(img/3.png)';
 	// else if (val == 0)
