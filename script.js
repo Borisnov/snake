@@ -22,133 +22,108 @@ var iP = 0
 var maxMove = 12
 var iMove = 0
 var iGeneration = 1
-var velosity = 170
+var velosity = 150
 var common_bal = 0
 var show =true;
 var data = [
 	[0,0,0]
 ];
 var plus=0;
-var g
+var g;
 var best=0;
 var moves=0;
 var after=9;
 var umnosit=20;
 var water=[];
+var path=[]
+eat_move=0;
 
 function fitness() {
 	iMove++
-	if(iMove>1000)killer()
-	var l=[0,0,0,0]
-	var l1=[0,0,0,0]
-	// if (x1 > ax1) l[0]=1
-	// else if(x1<ax1)l[2]=1
-	// if (x > ax) l[1]=1
-	// else if (x < ax) l[3] = 1
-	//proverka na nedostupnost
+	eat_move++;
+	// if(iMove>1000)alert(iMove)
+	// alert(eat_move+' ! '+path.length+'     '+path)
+	var xx=path[eat_move][0]
+	var xx1=path[eat_move][1]
+	if (xx==x&&norm(xx1+1)==x1) turn(37)
+	if (xx==x&&xx1==norm(1+x1)) turn(39)
+	if (norm(xx+1)==x&&xx1==x1) turn(38)
+	if (xx==norm(x+1)&&xx1==x1) turn(40)
+}
+
+function create_path(){
+	// var e=[1,2,3,4,5]
+	// var l = e[0]
+	// l=5
+
+	// alert(e+' eeee')
 	var grid=[]
 	// var temp;
 	// temp=[0,0,0,0,0,0]
 	for (var i = 0; i < side; i++){ grid[i]=[0,0,0,0,0,0,0,0,0,0];}
 	for (var i = 0; i < y.length; i++){grid[y[i]][y1[i]]=y.length-i;}
-
-	var du=0;var dr=0;var dl=0;var dd=0;
-	if(grid[x][norm(x1+1)])dd=1;
-	if(grid[x][norm(x1-1)])du=1;
-	if(grid[norm(x+1)][x1])dr=1;
-	if(grid[norm(x-1)][x1])dl=1;
-	if(grid[x][x1]&&iMove>3)killer()
-	grid[x][x1]=y.length+1
+	grid[x][x1]=y.length+1	
 	grid[ax][ax1]=-1;
-	var d=[du,dl,dd,dr];
-	water=[]
-	// alert(2)
-	dd=[x,norm(x1+1)]
-	du=[x,norm(x1-1)]
-	dr=[norm(x+1),x1]
-	dl=[norm(x-1),x1]
-	var d1=[du,dl,dd,dr];
-
-	for (var a = 0; a < 4; a++) {
-		if(d[a]==0){
-			water=[d1[a]]
-			var t=1
-			var c=0
-			var prev=0;
-			var copy=0
-			var i=0
-			var len=0;
-			var tupic=0;
-			while(t!=0){
-				c++;
-				prev=len;
-				i=water.length-1
-				len=i+1;
-				while (i>=prev) {
-					var q=[norm(water[i][0]+1),water[i][1]]
-					var q1=[norm(water[i][0]-1),water[i][1]]
-					var q2=[water[i][0],norm(water[i][1]+1)]
-					var q3=[water[i][0],norm(water[i][1]-1)]
-					var qq=[0,0,0,0]
-					for (var k = 0; k < water.length; k++) {
-						if(water[k][0]==q[0]&&water[k][1]==q[1])qq[0]=1;
-						if(water[k][0]==q1[0]&&water[k][1]==q1[1])qq[1]=1;
-						if(water[k][0]==q2[0]&&water[k][1]==q2[1])qq[2]=1;
-						if(water[k][0]==q3[0]&&water[k][1]==q3[1])qq[3]=1;
-					}
-					if(!qq[0])water.push(q)
-					if(!qq[1])water.push(q1)
-					if(!qq[2])water.push(q2)
-					if(!qq[3])water.push(q3)
-					i--;
-				}
-				i=prev;
-				while(i<water.length){if(grid[water[i][0]][water[i][1]]>=c+1) pop1(i); else i++;}
-
-				if(prev==water.length&&prev<side*side-y.length){t=0;l1[a]=side*umnosit;}
-
-				for (var i = prev; i < water.length; i++)
-					if(t==1&&grid[water[i][0]][water[i][1]]==-1){
-						t=2;copy=c;
-						tupic=0;
-						// water=[[ax,ax1]]
-						// len=0
-					}
-				if(t==2)tupic++
-
-				if(t==2&&tupic>=after){t=0;l1[a]=copy}
-			}
+	water=[[[x,x1]]]
+	var t=-1
+	var c=0
+	// alert(grid)
+	// var prev=0;
+	// var copy=0
+	var i=0
+	// var len=0;
+	// var tupic=0;
+	while(t==-1){
+		if(c>40)killer()
+		// if(water.length>25000)alert('water.length = '+water.length)
+		i=water.length-1
+		while (i>=0) {
+			water.push(water[i].slice())
+			water.push(water[i].slice())
+			water.push(water[i].slice())
+			water[i].push([norm(water[i][c][0]+1),water[i][c][1]])
+			water[water.length-1].push([norm(water[i][c][0]-1),water[i][c][1]])
+			water[water.length-2].push([water[i][c][0],norm(water[i][c][1]+1)])
+			water[water.length-3].push([water[i][c][0],norm(water[i][c][1]-1)])
+			i--;
+			if(water.length>50000)killer()
 		}
+		// for (var i = 0; i < water.length; i++) {
+		// 	alert(water[i])
+		// }
+		i=0;
+		// plot_update(water.length)
+		while(i<water.length){
+			var w=water.length
+			if(grid[water[i][c+1][0]][water[i][c+1][1]]>c+1) {pop1(i);} 
+			if(i<water.length){
+			for (var k = 0; k <= c; k++){
+				if(water[i][k][0]==water[i][c+1][0]&&water[i][k][1]==water[i][c+1][1])
+					{pop1(i);break;}
+			}}
+			if(water.length==w)i++;
+		}
+		for (var i = 0; i < water.length; i++)
+			if(grid[water[i][c+1][0]][water[i][c+1][1]]==-1) {
+				t=i
+				// if(test(water[i]))t=i;else pop1(i)
+			}
+		c++;
 	}
-
-	// document.getElementById("fitness").innerHTML =  d[0]+' '+d[1]+' '+d[2]+' '+d[3];
-	var r=0;
-	var m=side*side+1
-	var k=0
-	// var k1=-1;
-	for (var i = 0; i < 4; i++) {
-		if(l1[i]<m&&d[i]==0){m=l1[i]; k=i}
-	}
-	l[k]=1
-
-	if (l[0] == 1) turn(37)
-	else if (l[1] ==1) turn(38)
-	else if (l[2] ==1) turn(39)
-	else if (l[3] ==1) turn(40)
-	//37 up 38 left 39 dowm 40 right
-	// if ((iMove > maxMove && iP < CountP)) {
-	// 	//killer()
-	// }
+	plot_update(water.length/1000,c)
+	// alert('out')
+	path=water[t]
 }
 function norm(x){
 	return (x+side)%side
 }
-function plot_update() {
+function plot_update(r,r1) {
 	// var x = iGeneration; // current time
 	plus++;
 	common_bal+=bal
 	// moves=moves+iMove;
-	data.push([plus,bal,common_bal/plus]);
+	// data.push([plus,bal,common_bal/plus]);
+	data.push([plus,r,r1]);
 	g.updateOptions({
 		'file': data
 	});//iMove=0;
@@ -171,6 +146,7 @@ function plot() {
 
 function killer() {
 	// if(bal<20)alert(bal)
+	eat_move=0
 	iGeneration++;
 	setCell(y[0],y1[0],6)
 	setCell(x,x1,5)
@@ -187,17 +163,11 @@ function killer() {
 	eat();
 	// alert(2)
 	iP++
-	plot_update()
+	// plot_update(bal)
 	moves=0
 	bal=0;
 	iMove = 0
-	if (iP == CountP) {
-		// GA.evolvePopulation() 
-		iGeneration++
-		iP = 0
-		//plot_update()
-		best=0
-	}
+	create_path()
 }
 
 function createMatrix(length, width) {
@@ -288,6 +258,7 @@ function eatok() {
 		setCell(math, math1, 1024);
 		setCell(math, math1, 5);
 		bal++
+		eat_move=0;
 		//iMove = 0
 		// GA.Population[iP].fitness++ 
 		document.getElementById('bal').innerHTML = bal + ' б'
@@ -295,6 +266,7 @@ function eatok() {
 		// if(y.length==0)alert(0)
 			y.push(y[y.length-1])
 			y1.push(y1[y1.length-1])
+		create_path()
 	}
 }
 //ñêîðîñòíîé ðåæèì
@@ -387,6 +359,7 @@ function restart() {
 			// createMatrix(20, 20)
 		tale();
 		eat();
+		create_path()
 
 		inter1 = setInterval(move, 200);
 		// interval = setInterval(eatok, 10);
@@ -394,6 +367,7 @@ function restart() {
 		start1 = true;
 		tale();
 		eat();
+		create_path()
 		inter1 = setInterval(move, velosity);
 		//interval = setInterval(eatok, 1);
 	}
