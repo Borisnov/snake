@@ -35,8 +35,10 @@ var moves=0;
 var after=9;
 var umnosit=20;
 var water=[];
+var water1=[]
 var path=[]
 eat_move=0;
+var grid=[];
 
 function fitness() {
 	iMove++
@@ -52,14 +54,15 @@ function fitness() {
 }
 
 function create_path(){
-	// var e=[1,2,3,4,5]
-	// var l = e[0]
-	// l=5
-
-	// alert(e+' eeee')
-	var grid=[]
-	// var temp;
-	// temp=[0,0,0,0,0,0]
+	// var st=[]
+	// tri=1
+	// for (var i = 0; i < 20; i++) {
+	// 	st.push(tri)
+	// 	tri*=3
+	// 	// plot_update(0,tri)
+	// }
+	// alert(7)
+	// var grid=[]
 	for (var i = 0; i < side; i++){ grid[i]=[0,0,0,0,0,0,0,0,0,0];}
 	for (var i = 0; i < y.length; i++){grid[y[i]][y1[i]]=y.length-i;}
 	grid[x][x1]=y.length+1	
@@ -103,16 +106,61 @@ function create_path(){
 			}}
 			if(water.length==w)i++;
 		}
-		for (var i = 0; i < water.length; i++)
+		i=0
+		while (i<water.length)
 			if(grid[water[i][c+1][0]][water[i][c+1][1]]==-1) {
-				t=i
-				// if(test(water[i]))t=i;else pop1(i)
-			}
+				if(test(water[i])){t=i; break}else{pop1(i)}
+			}else i++;
 		c++;
+		// if(water.length>25000)alert(water.length)
 	}
-	plot_update(water.length/1000,c)
+	plot_update(0,c)
 	// alert('out')
 	path=water[t]
+}
+function test(arr){
+	var t=-1
+	var i=0
+	var prev=0
+	// alert(arr)
+	water1=[arr.slice()];
+	// var c=0
+	var c=water1[0].length-1
+	var c1=c+7
+	while(t==-1){
+		prev = water1.length
+		// if(water.length>25000)alert('water.length = '+water.length)
+		i=water1.length-1
+		while (i>=0) {
+			water1.push(water1[i].slice())
+			water1.push(water1[i].slice())
+			water1.push(water1[i].slice())
+			water1[i].push([norm(water1[i][c][0]+1),water1[i][c][1]])
+			water1[water1.length-1].push([norm(water1[i][c][0]-1),water1[i][c][1]])
+			water1[water1.length-2].push([water1[i][c][0],norm(water1[i][c][1]+1)])
+			water1[water1.length-3].push([water1[i][c][0],norm(water1[i][c][1]-1)])
+			i--;
+			// if(water1.length>50000)killer()
+		}
+		i=0;
+		// plot_update(water1.length)
+		// alert(water1.length)
+		while(i<water1.length){
+			var w=water1.length
+			if(grid[water1[i][c+1][0]][water1[i][c+1][1]]>c+1) {pop2(i);} 
+			if(i<water1.length){
+			for (var k = 0; k <= c; k++){
+				if(water1[i][k][0]==water1[i][c+1][0]&&water1[i][k][1]==water1[i][c+1][1])
+					{pop2(i);break;}
+			}}
+			if(water1.length==w)i++;
+		}
+		// alert(water1.length)
+		c++;
+		if(c==c1)t=1
+		if(water1.length == prev)t=0
+	} 
+	return t
 }
 function norm(x){
 	return (x+side)%side
@@ -130,9 +178,15 @@ function plot_update(r,r1) {
 }
 function pop1(a) {
 	for (var i = a; i < water.length-1; i++) {
-		water[i]=water[i+1]
+		water[i]=water[i+1].slice()
 	}
 	water.pop()
+}
+function pop2(a) {
+	for (var i = a; i < water1.length-1; i++) {
+		water1[i]=water1[i+1].slice()
+	}
+	water1.pop()
 }
 function plot() {
 	g = new Dygraph(document.getElementById("div_g"), data, {
@@ -253,6 +307,7 @@ function eat() {
 }
 //ïðîâåðêà (ñúåë ëè åäó)
 function eatok() {
+	if(y.length>85)alert(y.length)
 	if ((x == math) && (x1 == math1)) {
 		//speed++
 		setCell(math, math1, 1024);
@@ -287,7 +342,7 @@ function move() {
 	//ïîãàñèëè
 	fitness()
 
-	if(y.length!=y1.length)alert('smal')
+	//if(y.length!=y1.length)alert('smal')
 	setCell(y[y.length-1], y1[y.length-1], 1024)
 	// setCell(x, x1, 1024)
 	for (var i = y.length - 1; i > 0; i--) {
